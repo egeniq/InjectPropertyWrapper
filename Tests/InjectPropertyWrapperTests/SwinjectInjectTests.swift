@@ -3,16 +3,6 @@ import XCTest
 import InjectPropertyWrapper
 import Swinject
 
-extension Container: InjectPropertyWrapper.Resolver {
-    public func resolve<T>(_ type: T.Type) -> T {
-        return resolve(type)!
-    }
-    
-    public func resolve<T>(_ type: T.Type, name: String) -> T {
-        return resolve(type, name: name)!
-    }
-}
-
 final class SwinjectInjectTests: XCTestCase {
     func testInject() {
         let container = Container()
@@ -21,7 +11,7 @@ final class SwinjectInjectTests: XCTestCase {
         container.register(Int.self) { _ in 123 }
         container.register(Int.self, name: "named") { _ in 456 }        
 
-        InjectConfig.resolver = container
+        InjectSettings.resolver = container
         
         let stringObject = MockObject<String>()
         XCTAssertEqual(stringObject.value, "a")

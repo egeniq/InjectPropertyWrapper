@@ -4,7 +4,7 @@ import InjectPropertyWrapper
 final class SimpleInjectTests: XCTestCase {
     func testInject() {
         let resolver = MockResolver()
-        InjectConfig.resolver = resolver
+        InjectSettings.resolver = resolver
         
         resolver.register(String.self, value: "a")
         resolver.register(String.self, name: "named", value: "b")

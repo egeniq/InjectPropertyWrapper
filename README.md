@@ -21,17 +21,56 @@ extension Container: InjectPropertyWrapper.Resolver {
 }
 ```
 
-Then you need to set the global resolver:
+Then you need to set the global resolver (for example in your app delegate):
 ```swift
 let container = Container()
-InjectConfig.resolver = container
+InjectSettings.resolver = container
 ```
 
-Now you can use the @Inject property wrapper to inject objects/services in your own class:
-
+Register some objects in the container:
 ```swift
-class Example {
-    @Inject private var service: MyService
+container.register(APIClient.self) { _ in APIClient() }
+container.register(MovieRepository.self) { _ in IMDBMovieRepository() }
+container.register(MovieRepository.self, name: "netherlands") { _ in IMDBMovieRepository("nl") }
+```
+
+Now you can use the @Inject property wrapper to inject objects/services in your own classes:
+```swift
+class IMDBMovieRepository: MovieRepository {
+    @Inject private var apiClient: APIClient
+    
+    ...
+    
+    func fetchTop10(completionHandler: @escaping (movies: [Movie]) -> Void) {
+        ...
+    }
+}
+
+class MovieViewModel: BindableObject {
+    public var didChange = PassthroughSubject<Void, Never>()
+    public private(set) var top10: [Movie]? {
+        didSet {
+            didChange.send()    
+        }
+    }
+
+    @Inject private var movieRepository: MovieRepository
+    
+    func load() {
+        movieRepository.fetchTop10() { [weak self] movies in
+            self?.top10 = movies
+        }
+    }
+}
+```
+
+It is also possible to inject different objects of the same type using the name parameter:
+```swift
+class MovieViewModel: BindableObject {
+    ...
+    @Inject private var globalMovieRepository: MovieRepository
+    @Inject(name: "netherlands") private var nlMovieRepository: MovieRepository
+    ...
 }
 ```
 

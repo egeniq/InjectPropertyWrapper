@@ -5,21 +5,31 @@
 //  Created by Peter Verhage on 01/07/2019.
 //
 
-
 @propertyWrapper
 public struct Inject<Value> {
-    public let type = Value.self
-    public let name: String?
-    
     public private(set) var value: Value
     
     public init() {
-        name = nil
-        value = InjectConfig.resolver!.resolve(type)
+        guard let resolver = InjectSettings.resolver else {
+            fatalError("Make sure InjectSettings.resolver is set!")
+        }
+        
+        self.init(resolver: resolver)
     }
     
     public init(name: String) {
-        self.name = name
-        value = InjectConfig.resolver!.resolve(type, name: name)
+        guard let resolver = InjectSettings.resolver else {
+            fatalError("Make sure InjectSettings.resolver is set!")
+        }
+
+        self.init(name: name, resolver: resolver)
+    }
+
+    public init(resolver: Resolver) {
+        value = resolver.resolve(Value.self)
+    }
+    
+    public init(name: String, resolver: Resolver) {
+        value = resolver.resolve(Value.self, name: name)
     }
 }
