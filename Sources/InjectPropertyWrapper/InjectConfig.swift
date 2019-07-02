@@ -1,12 +1,10 @@
 //
-//  InjectPropertyWrapper.swift
-//  
+//  InjectConfig.swift
+//
 //
 //  Created by Peter Verhage on 01/07/2019.
 //
 
-import Foundation
-
-struct InjectPropertyWrapper {
+public struct InjectConfig {
     public static var resolver: Resolver?
 }

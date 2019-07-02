@@ -15,11 +15,11 @@ public struct Inject<Value> {
     
     public init() {
         name = nil
-        value = InjectPropertyWrapper.resolver!.resolve(type)
+        value = InjectConfig.resolver!.resolve(type)
     }
     
     public init(name: String) {
         self.name = name
-        value = InjectPropertyWrapper.resolver!.resolve(type, name: name)
+        value = InjectConfig.resolver!.resolve(type, name: name)
     }
 }
