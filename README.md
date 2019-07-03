@@ -81,6 +81,14 @@ class MovieViewModel: BindableObject {
 }
 ```
 
+## Testing
+
+To run the tests for this package make sure the `ENABLE_TESTS` environment variable is set to `1` or `true`. For example when using the command line:
+```
+ENABLE_TESTS=1 swift test
+```
+This allows the package to only load certain dependencies when testing.
+
 ## License
 
 This project is licensed under the terms of the MIT license. See the [LICENSE](LICENSE) file.
