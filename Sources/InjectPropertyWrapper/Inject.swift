@@ -33,9 +33,3 @@ public struct Inject<Value> {
         wrappedValue = resolver.resolve(Wrapped.self, name: name)
     }
 }
-//
-//extension Inject where Value: Optional<Value> {
-//    convenience init(name: String, resolver: Resolver) {
-//        wrappedValue = resolver.resolve(Value.self, name: name)
-//    }
-//}
