@@ -30,7 +30,7 @@ container.register(MovieRepository.self) { _ in IMDBMovieRepository() }
 container.register(MovieRepository.self, name: "netherlands") { _ in IMDBMovieRepository("nl") }
 ```
 
-Now you can use the @Inject property wrapper to inject objects/services in your own classes:
+Now you can use the `@Inject` property wrapper to inject objects/services in your own classes:
 ```swift
 class IMDBMovieRepository: MovieRepository {
     @Inject private var apiClient: APIClient
