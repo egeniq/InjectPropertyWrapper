@@ -5,10 +5,10 @@ a dependency injection framework of your choice.
 
 ## Basic Usage
 
-First, you need to implement the [Sources/InjectPropertyWrapper/Resolver.swift](Resolver) protocol for
+First, you need to implement the [`Resolver`](Sources/InjectPropertyWrapper/Resolver.swift) protocol for
 the Dependency Injection (DI) framework you are using.
 
-For example, when using [https://github.com/Swinject/Swinject](Swinject):
+For example, when using [Swinject](https://github.com/Swinject/Swinject):
 ```swift
 extension Container: InjectPropertyWrapper.Resolver {
 }
