@@ -9,11 +9,5 @@ import Swinject
 import InjectPropertyWrapper
 
 extension Container: InjectPropertyWrapper.Resolver {
-    public func resolve<T>(_ type: T.Type) -> T {
-        return resolve(type)!
-    }
-    
-    public func resolve<T>(_ type: T.Type, name: String) -> T {
-        return resolve(type, name: name)!
-    }
+    // resolve method signature is the same
 }

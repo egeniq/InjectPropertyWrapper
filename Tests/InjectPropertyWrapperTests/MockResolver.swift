@@ -15,11 +15,7 @@ class MockResolver: Resolver {
         registry[key(type: type, name: name)] = value
     }
 
-    func resolve<T>(_ type: T.Type) -> T {
-        return registry[key(type: type)] as! T
-    }
-    
-    func resolve<T>(_ type: T.Type, name: String) -> T {
-        return registry[key(type: type, name: name)] as! T
+    func resolve<T>(_ type: T.Type, name: String?) -> T? {
+        return registry[key(type: type, name: name)] as? T
     }
 }
