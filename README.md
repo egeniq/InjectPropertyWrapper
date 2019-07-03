@@ -11,15 +11,11 @@ the Dependency Injection (DI) framework you are using.
 For example, when using [https://github.com/Swinject/Swinject](Swinject):
 ```swift
 extension Container: InjectPropertyWrapper.Resolver {
-    public func resolve<T>(_ type: T.Type) -> T {
-        return resolve(type)!
-    }
-    
-    public func resolve<T>(_ type: T.Type, name: String) -> T {
-        return resolve(type, name: name)!
-    }
 }
 ```
+
+In case of Swinject the `Container` class already contains a method with the same signature (`resolve<T>(_ type: T, name: String?)`)
+as the InjectPropertyWrapper `Resolver` protocol requires.
 
 Then you need to set the global resolver (for example in your app delegate):
 ```swift
@@ -70,6 +66,17 @@ class MovieViewModel: BindableObject {
     ...
     @Inject private var globalMovieRepository: MovieRepository
     @Inject(name: "netherlands") private var nlMovieRepository: MovieRepository
+    ...
+}
+```
+
+Normally if the property wrapper is unable to resolve a dependency it will raise a non-recoverable
+fatal error. If for some reason you expect an object sometimes to be unavailable in your container,
+you can mark the property as optional:
+```swift
+class MovieViewModel: BindableObject {
+    ...
+    @Inject(name: "germany") private var deMovieRepository: MovieRepository?
     ...
 }
 ```
