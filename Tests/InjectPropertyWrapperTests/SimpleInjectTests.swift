@@ -18,6 +18,20 @@ final class SimpleInjectTests: XCTestCase {
         let intObject = MockObject<Int>()
         XCTAssertEqual(intObject.value, 123)
         XCTAssertEqual(intObject.namedValue, 456)
+        
+        // there is no registered bool, but the optional mock object has declared its
+        // injected properties as optional, so no error is thrown
+        let boolObject = MockObjectOptional<Bool>()
+        XCTAssertEqual(boolObject.value, nil)
+        XCTAssertEqual(boolObject.namedValue, nil)
+
+        // however, the non optional mock object does require all injected properties
+        // to be non optional, so we expect an exception here
+        expectFatalError(expectedMessage: "Could not resolve non-optional Bool") {
+            let boolObject = MockObject<Bool>()
+            XCTAssertEqual(boolObject.value, nil)
+            XCTAssertEqual(boolObject.namedValue, nil)
+        }
     }
 
     static var allTests = [

@@ -7,29 +7,29 @@
 
 @propertyWrapper
 public struct Inject<Value> {
-    public private(set) var value: Value
+    public private(set) var wrappedValue: Value
     
     public init() {
-        guard let resolver = InjectSettings.resolver else {
+        self.init(name: nil, resolver: nil)
+    }
+    
+    public init(name: String? = nil, resolver: Resolver? = nil) {
+        guard let resolver = resolver ?? InjectSettings.resolver else {
             fatalError("Make sure InjectSettings.resolver is set!")
         }
         
-        self.init(resolver: resolver)
+        guard let value = resolver.resolve(Value.self, name: name) else {
+            fatalError("Could not resolve non-optional \(Value.self)")
+        }
+        
+        wrappedValue = value
     }
     
-    public init(name: String) {
-        guard let resolver = InjectSettings.resolver else {
+    public init<Wrapped>(name: String? = nil, resolver: Resolver? = nil) where Value == Optional<Wrapped> {
+        guard let resolver = resolver ?? InjectSettings.resolver else {
             fatalError("Make sure InjectSettings.resolver is set!")
         }
-
-        self.init(name: name, resolver: resolver)
-    }
-
-    public init(resolver: Resolver) {
-        value = resolver.resolve(Value.self)
-    }
-    
-    public init(name: String, resolver: Resolver) {
-        value = resolver.resolve(Value.self, name: name)
+        
+        wrappedValue = resolver.resolve(Wrapped.self, name: name)
     }
 }

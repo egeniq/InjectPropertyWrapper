@@ -2,27 +2,41 @@
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
+import Foundation
+
+// As we only want certain dependencies to be loaded for testing purposes, and there is no
+// way to let Swift package manager know to only load the packages for testing purposes,
+// we manually set testing to enabled or not to load the test dependencies and target.
+let enableTests = ProcessInfo.processInfo.environment["ENABLE_TESTS"] == "1" ||
+                  ProcessInfo.processInfo.environment["ENABLE_TESTS"] == "true" ||
+                  ProcessInfo.processInfo.environment["ENABLE_TESTS"] == "yes"
+
+var dependencies: [Package.Dependency] = []
+var targets: [Target] = [
+    .target(name: "InjectPropertyWrapper", dependencies: []),
+]
+
+if enableTests {
+    dependencies.append(
+        .package(url: "https://github.com/Swinject/Swinject.git", from: "2.6.2")
+    )
+    
+    targets.append(
+        .testTarget(
+            name: "InjectPropertyWrapperTests",
+            dependencies: [
+                "InjectPropertyWrapper",
+                "Swinject"
+            ]
+        )
+    )
+}
 
 let package = Package(
     name: "InjectPropertyWrapper",
     products: [
-        // Products define the executables and libraries produced by a package, and make them visible to other packages.
-        .library(
-            name: "InjectPropertyWrapper",
-            targets: ["InjectPropertyWrapper"]),
+        .library(name: "InjectPropertyWrapper", targets: ["InjectPropertyWrapper"]),
     ],
-    dependencies: [
-        // Dependencies declare other packages that this package depends on.
-        .package(url: "https://github.com/Swinject/Swinject.git", from: "2.6.2"),
-    ],
-    targets: [
-        // Targets are the basic building blocks of a package. A target can define a module or a test suite.
-        // Targets can depend on other targets in this package, and on products in packages which this package depends on.
-        .target(
-            name: "InjectPropertyWrapper",
-            dependencies: []),
-        .testTarget(
-            name: "InjectPropertyWrapperTests",
-            dependencies: ["InjectPropertyWrapper", "Swinject"]),
-    ]
+    dependencies: dependencies,
+    targets: targets
 )

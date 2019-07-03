@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |spec|
   spec.name          = "InjectPropertyWrapper"
-  spec.version       = "0.2.0"
+  spec.version       = "0.3.0"
   spec.author        = { "Peter Verhage" => "peter@egeniq.com" }
   spec.homepage      = "https://github.com/egeniq/InjectPropertyWrapper"
   spec.license       = { :type => "MIT", :file => "LICENSE" }

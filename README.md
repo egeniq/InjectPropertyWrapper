@@ -1,25 +1,21 @@
 # InjectPropertyWrapper
 
-Provides a generic Swift @Inject property wrapper that can be used to inject objects / services from 
+Provides a generic Swift `@Inject` property wrapper that can be used to inject objects / services from 
 a dependency injection framework of your choice.
 
 ## Basic Usage
 
-First, you need to implement the [Sources/InjectPropertyWrapper/Resolver](Resolver) protocol for
+First, you need to implement the [`Resolver`](Sources/InjectPropertyWrapper/Resolver.swift) protocol for
 the Dependency Injection (DI) framework you are using.
 
-For example, when using [https://github.com/Swinject/Swinject](Swinject):
+For example, when using [Swinject](https://github.com/Swinject/Swinject):
 ```swift
 extension Container: InjectPropertyWrapper.Resolver {
-    public func resolve<T>(_ type: T.Type) -> T {
-        return resolve(type)!
-    }
-    
-    public func resolve<T>(_ type: T.Type, name: String) -> T {
-        return resolve(type, name: name)!
-    }
 }
 ```
+
+In case of Swinject the `Container` class already contains a method with the same signature (`resolve<T>(_ type: T, name: String?)`)
+as the InjectPropertyWrapper `Resolver` protocol requires.
 
 Then you need to set the global resolver (for example in your app delegate):
 ```swift
@@ -34,7 +30,7 @@ container.register(MovieRepository.self) { _ in IMDBMovieRepository() }
 container.register(MovieRepository.self, name: "netherlands") { _ in IMDBMovieRepository("nl") }
 ```
 
-Now you can use the @Inject property wrapper to inject objects/services in your own classes:
+Now you can use the `@Inject` property wrapper to inject objects/services in your own classes:
 ```swift
 class IMDBMovieRepository: MovieRepository {
     @Inject private var apiClient: APIClient
@@ -73,6 +69,25 @@ class MovieViewModel: BindableObject {
     ...
 }
 ```
+
+Normally if the property wrapper is unable to resolve a dependency it will raise a non-recoverable
+fatal error. If for some reason you expect an object sometimes to be unavailable in your container,
+you can mark the property as optional:
+```swift
+class MovieViewModel: BindableObject {
+    ...
+    @Inject(name: "germany") private var deMovieRepository: MovieRepository?
+    ...
+}
+```
+
+## Testing
+
+To run the tests for this package make sure the `ENABLE_TESTS` environment variable is set to `1` or `true`. For example when using the command line:
+```
+ENABLE_TESTS=1 swift test
+```
+This allows the package to only load certain dependencies when testing.
 
 ## License
 
